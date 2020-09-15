@@ -7,13 +7,15 @@ const firebaseConfig = {
     storageBucket: "react-f137b.appspot.com",
     messagingSenderId: "1087052118047",
     appId: "1:1087052118047:web:c80e68ce39b19a1c3bbd2a",
-    databaseURL:'https://react-f137b.firebaseio.com'
+    databaseURL:`https://react-f137b.firebaseio.com`
 }
  
 
 !firebase.apps.length && firebase.initializeApp(firebaseConfig)//verify 
 const db = firebase.firestore();
-   const mapUserFromFirebaseAuthToUser = (user) => {
+
+
+const mapUserFromFirebaseAuthToUser = (user) => {
   const { displayName, email, photoURL,uid } = user
   return {
     avatar: photoURL,
@@ -53,11 +55,18 @@ export const fetchDevit = ()=>{
      .then(snapShot=>{
          return snapShot.docs.map(doc=>{
              const data = doc.data()
-             const id = doc.id
+             
              return {
-               id,
-               ...data
+               ...data,
+               id:doc.id,
+  
              }
          })
      })
+}
+
+const uploadImage = (file)=>{
+  const ref = firebase.storage().ref(`images/${file.image}`)
+  const task = ref.put(file)
+  return tasks
 }

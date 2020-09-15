@@ -6,7 +6,6 @@ import useUser from 'hooks/useUser'
 import {addDevit} from 'firebase/client'
 import {useRouter} from 'next/router'
 
-
 const COMPOSE_STATE ={
   LOADING:1,
   SUCCESS_:2,
@@ -14,12 +13,27 @@ const COMPOSE_STATE ={
 }
 
 
+const DRAG_IMAGE_STATE ={
+  error:-1,
+  NONE:0,
+  DRAF_OVER:1,
+  UPLOADING:2,
+  complete:3
+}
+
 export default function Tweek(){
-  const user = useUser();
-  const router = useRouter()
+ 
   const [status, setStatus]= useState(COMPOSE_STATE)
   const [message, setmessage] = useState('')
- 
+  const [drag, setDrag] = useState(DRAG_IMAGE_STATE.NONE)
+  const [file, setFile] = useState(null)
+  const [imageUrl, setImageUrl] = useState(null)
+
+
+
+  const user = useUser();
+  const router = useRouter()
+
   const handleSubmit = (e)=>{
     e.preventDefault();
     setStatus(COMPOSE_STATE.LOADING)
@@ -33,13 +47,27 @@ export default function Tweek(){
     })
     
   }
+
+  const handleDragEnter = e=>{
+    setDrag(DRAG_IMAGE_STATE.DRAF_OVER)
+  }
+  const handlerDragLeave = e=>{
+    setDrag(DRAG_IMAGE_STATE.NONE)
+  }
+  const handlerDrop  = e=>{
+    setDrag(DRAG_IMAGE_STATE.NONE)
+  }
+
  const isButtonDisabled = !message.length || status === COMPOSE_STATE.LOADING
    return(
    	<>
    	<AppLayout>
        <form action="" onSubmit={handleSubmit}>
        <textarea 
-          placeholder="¿Que esta pasando ?"
+          onDragEnter={handleDragEnter}
+          onDragLeave={handlerDragLeave}
+          onDrop={handlerDrop}
+          placeholder="¿Que esta pènsando ?"
           value={message}
           onChange={e=>setmessage(e.target.value)}
          >
@@ -54,7 +82,7 @@ export default function Tweek(){
             width:100%;
             resize:none;
             padding:15px;
-            border:0;
+            border:${drag === DRAG_IMAGE_STATE.DRAF_OVER ? '3px dashed #09f': '3px solid transparent'};
             outline:0;
             min-height:200px;
             font-size:14px;

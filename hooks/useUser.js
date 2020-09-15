@@ -8,7 +8,6 @@ export default function useUser(){
     
 	  useEffect(() => {
 	    onAuthStateChanged(setUser)
-	    
 	  }, [])
 
 

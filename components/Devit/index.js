@@ -1,6 +1,8 @@
 import Avatar from "components/Avatar"
+import useTimeago from 'hooks/useTimeago'
 
-export default function Devit({ avatar, username, message, id }) {
+export default function Devit({ avatar, username, message, id,createdAt }) {
+  const timeago = useTimeago(createdAt);
   return (
     <>
       <article>
@@ -8,8 +10,9 @@ export default function Devit({ avatar, username, message, id }) {
           <Avatar alt={username} src={avatar} />
         </div>
         <section>
-          <strong>{username}</strong>
+          <strong>{username}</strong> <small>{timeago}</small>
           <p>{message}</p>
+         
         </section>
       </article>
       <style jsx>{`
@@ -26,6 +29,10 @@ export default function Devit({ avatar, username, message, id }) {
         p {
           line-height: 1.3125;
           margin: 0;
+        }
+        smDall{
+          color:#555;
+          font-size:10px
         }
       `}</style>
     </>
