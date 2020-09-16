@@ -65,8 +65,8 @@ export const fetchDevit = ()=>{
      })
 }
 
-const uploadImage = (file)=>{
+export const uploadImage = (file)=>{
   const ref = firebase.storage().ref(`images/${file.image}`)
   const task = ref.put(file)
-  return tasks
+  return task
 }

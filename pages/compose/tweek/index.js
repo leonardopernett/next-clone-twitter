@@ -1,9 +1,9 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
 import AppLayout from 'components/AppLayout'
 import Button from 'components/Button'
 import useUser from 'hooks/useUser'
-import {addDevit} from 'firebase/client'
+import {addDevit, uploadImage} from 'firebase/client'
 import {useRouter} from 'next/router'
 
 const COMPOSE_STATE ={
@@ -26,9 +26,27 @@ export default function Tweek(){
   const [status, setStatus]= useState(COMPOSE_STATE)
   const [message, setmessage] = useState('')
   const [drag, setDrag] = useState(DRAG_IMAGE_STATE.NONE)
-  const [file, setFile] = useState(null)
+  const [task, setTask] = useState(null)
   const [imageUrl, setImageUrl] = useState(null)
 
+  
+  useEffect(()=>{
+
+   const onProgress = ()=>{}
+   const onError = ()=>{}
+   const onComplete = ()=>{
+     console.log('complete')
+   }
+
+     if(task){
+       //metodo de firebase
+        task.on('state_changed',
+          onProgress,
+          onError,
+          onComplete
+        )
+     }
+  },[task])
 
 
   const user = useUser();
@@ -49,15 +67,20 @@ export default function Tweek(){
   }
 
   const handleDragEnter = e=>{
+    e.preventDefault()
     setDrag(DRAG_IMAGE_STATE.DRAF_OVER)
   }
   const handlerDragLeave = e=>{
+    e.preventDefault()
     setDrag(DRAG_IMAGE_STATE.NONE)
   }
   const handlerDrop  = e=>{
-    setDrag(DRAG_IMAGE_STATE.NONE)
-  }
-
+    e.preventDefault()
+    console.log(e.dataTransfer.files[0])
+    const  file = e.dataTransfer.files[0];
+    const res = uploadImage(file)
+    setTask(res)
+}
  const isButtonDisabled = !message.length || status === COMPOSE_STATE.LOADING
    return(
    	<>
